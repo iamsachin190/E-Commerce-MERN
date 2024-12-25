@@ -32,5 +32,11 @@ const createOrder = async (req, res)=>{
     return res.status(200).json(
         new apiResponse(200, createOrder, 'order created successfully ')
     )  
+
+    // get order by id 
+    // get all oder (admin)
+    // update order status
+    // delete order
+    
 } 
 
