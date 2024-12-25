@@ -112,6 +112,48 @@ const logoutUser = async (req, res) => {
   .json(new apiResponse(200, null, "User logged out successfully"))
 }
 
+const updateProfile = async (req, res) =>{
+  const { name, email } = req.body;
+  const user = await User.findByIdAndUpdate(req.user._id, {
+    name,
+    email
+  })
+
+  if(!user) {
+    return res.status(404).json(new apiResponse(404, null, "User not found"))
+  }
+
+  return res.status(200).json(new apiResponse(200, user, "User updated successfully"))
+}
+
+const getUserProfile = async (req, res) => {
+  const user = await User.findById(req.user._id).select("-password")
+
+  if(!user){
+    return res.status(404).json(new apiResponse(404, null, "User not found"))
+  }
+
+  return res.status(200).json(new apiResponse(400, user , "User profile recieved succesfully"))
+}
+
+const changePassword = async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  if(!oldPassword || !newPassword){
+     return res.status(404).json(new apiResponse(404, null, "Old password and new password are required"))
+  }
+  const user = await User.findById(req.user._id)
+
+  const compareOldPassword = User.isPasswordCorret(oldPassword)
+
+  if(!compareOldPassword){
+     return  req.status(404).json(new apiResponse(404 , null, "Enter valid old password "))
+  }
+
+  user.password = newPassword ; 
+
+  return res.status(200).json(200, user, "Password updated successfully")
+} 
 
 
-export { registerUser, loginUser , logoutUser };
+
+export { registerUser, loginUser , logoutUser , updateProfile , getUserProfile, changePassword };
