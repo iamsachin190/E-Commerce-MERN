@@ -1,5 +1,5 @@
-import { Order } from "../models/order.model";
-import apiResponse from "../utils/apiResponse.js"
+import { Order } from "../models/order.model.js";
+import {apiResponse} from "../utils/apiResponse.js"
 import { Product } from "../models/product.model.js";
 
 const createOrder = async (req, res) => {
@@ -32,6 +32,8 @@ const createOrder = async (req, res) => {
     return res.status(200).json(
         new apiResponse(200, createOrder, 'order created successfully ')
     )  
+
+  }
 
     // get order by id 
 
@@ -127,7 +129,7 @@ const getOrderById = async (req, res) => {
    }
    
 
-} 
 
-export { deleteOrder, updateOrderStatus, getOrders, createOrder, getOrderByid }
+
+export { deleteOrder, orderStatusUpdate, allOrder, createOrder, getOrderById }
 

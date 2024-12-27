@@ -21,12 +21,12 @@ const registerUser = async (req, res) => {
   const { name, email, password, role } = req.body;
 
   if ([name, email, password, role].some((field) => field?.trim() === "")) {
-    return res.status(400).json(apiResponse(400, null, "Please fill all the fields"));
+    return res.status(400).json(new apiResponse(400, null, "Please fill all the fields"));
   }
 
   const existingUser = await User.findOne({ email });
   if (existingUser) {
-    return res.status(400).json(apiResponse(400, null, "Email already exists"));
+    return res.status(400).json(new apiResponse(400, null, "Email already exists"));
   }
 
   const user = await User.create({
@@ -39,11 +39,11 @@ const registerUser = async (req, res) => {
   const createdUser = await User.findById(user._id).select("-password -refreshToken");
 
   if (!createdUser) {
-    return res.status(500).json(apiResponse(500, null, "Something went wrong while registering user"));
+    return res.status(500).json(new apiResponse(500, null, "Something went wrong while registering user"));
   }
 
   return res.status(201).json(
-    apiResponse(200, createdUser, "User Registered Successfully")
+    new apiResponse(200, createdUser, "User Registered Successfully")
   );
 };
 
@@ -51,17 +51,17 @@ const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json(apiResponse(400, null, "Please fill email and password"));
+    return res.status(400).json(new apiResponse(400, null, "Please fill email and password"));
   }
-
-  const user = await User.findOne({ email });
+  try {
+    const user = await User.findOne({ email });
   if (!user) {
-    return res.status(400).json(apiResponse(400, null, "Invalid email or password"));
+    return res.status(400).json(new apiResponse(400, null, "Invalid email or password"));
   }
 
   const isValidPassword = await user.isPasswordCorret(password);
   if (!isValidPassword) {
-    return res.status(400).json(apiResponse(400, null, "Invalid password"));
+    return res.status(400).json(new apiResponse(400, null, "Invalid password"));
   }
 
   const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
@@ -87,7 +87,12 @@ const loginUser = async (req, res) => {
         "User logged in successfully"
       )
     );
-};
+  } catch (error) {
+     return res.status(500).json(new apiResponse(500, null, "Internal Server Error"))
+  }
+}
+
+  
 const logoutUser = async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,

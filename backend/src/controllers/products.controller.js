@@ -2,36 +2,58 @@ import { Product } from "../models/product.model.js";
 import { apiResponse } from "../utils/apiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
+const createProduct = async (req, res) => {
+   try {
+       console.log("Request Body:", req.body);
+       console.log("Uploaded File:", req.file);
 
-const createProduct = async (req, res ) =>{
-   
-        const { name, price, description } = req.body;
+       const { name, price, description, category } = req.body;
 
-        if ([name, price, description].some((field) => field?.trim() === "")) {
-            return res.status(400).json(apiResponse(400, null, "Please fill all the fields"));
-          }
+       // Validate input fields
+       if ([name, price, description, category].some((field) => field?.trim() === "")) {
+           console.log("Validation Failed: Missing required fields.");
+           return res.status(400).json(new apiResponse(400, null, "Please fill all the fields"));
+       }
 
-     let productImageLocalPath = req.file.path; 
-     console.log(productImageLocalPath) 
-       
-     const ProductImageUrl = await uploadOnCloudinary(productImageLocalPath)
+       // Verify uploaded file
+       if (!req.file) {
+           console.log("Validation Failed: No file uploaded.");
+           return res.status(400).json(new apiResponse(400, null, "File upload failed"));
+       }
 
-     const product = await Product.create({
-        name,
-        price,
-        description,
-        image: ProductImageUrl 
-     })
+       // Get the local path of the uploaded file
+       const productImageLocalPath = req.file.path;
+       console.log("File Path for Upload:", productImageLocalPath);
 
-     const CreatedProduct = await Product.findByid(product._id)
+       // Upload the file to Cloudinary
+       const ProductImageUrl = await uploadOnCloudinary(productImageLocalPath);
+       console.log("Cloudinary URL:", ProductImageUrl);
 
-     if(!createProduct){
-        throw new apiResponse(500, null, "Failed to create product")
-     }
+       // Create the product in the database
+       const product = await Product.create({
+           name,
+           price,
+           description,
+           category,
+           image: ProductImageUrl,
+       });
+       console.log("Created Product:", product);
 
-    return res.status(201).json(apiResponse(201, CreatedProduct, "Product created successfully"))
-       
-}
+       const CreatedProduct = await Product.findById(product._id);
+       console.log("Retrieved Product:", CreatedProduct);
+
+       if (!CreatedProduct) {
+           console.log("Failed to retrieve created product.");
+           return res.status(500).json(new apiResponse(500, null, "Failed to create product"));
+       }
+
+       return res.status(201).json(new apiResponse(201, CreatedProduct, "Product created successfully"));
+   } catch (error) {
+       console.error("Error:", error.message);
+       return res.status(500).json(new apiResponse(500, null, "Internal server error"));
+   }
+};
+
 
 // product update
 

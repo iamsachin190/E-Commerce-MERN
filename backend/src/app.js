@@ -18,8 +18,10 @@ app.use(cookieParser())
 
 import userRouter from "./routes/user.routes.js"
 import productRouter from "./routes/product.routes.js"
-app.use("/users", userRouter)
-app.use("/product", productRouter)
+import orderRouter from "./routes/order.routes.js"
+app.use("/api/users", userRouter)
+app.use("/api/product", productRouter)
+app.use("/api/order", orderRouter)
 
 
 

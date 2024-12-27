@@ -9,8 +9,9 @@ const storage = multer.diskStorage({
     cb(null, file.originalname);
    }        
 })
+export const uploadSingleFile = multer({storage:storage}).single('file');
 
- const upload = multer ({
-    storage
-})
-export const uploadSingleFile = upload.single('file');  
+//  const upload = multer ({
+//     storage
+// })
+// export const uploadSingleFile = upload.single('file');  
