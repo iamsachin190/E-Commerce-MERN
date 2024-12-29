@@ -5,7 +5,7 @@ import { uploadSingleFile } from "../middlewares/multer.middleware.js";
 
 const productRouter = Router();
 
-productRouter.post('/create',uploadSingleFile ,verifyJWT, createProduct);
+productRouter.post('/create',verifyJWT, uploadSingleFile , createProduct);
 productRouter.get('/productId', verifyJWT, getProductById);
 productRouter.get('/category', verifyJWT, getProductByCategory);
 productRouter.get('/allproducts', verifyJWT, allProduct);

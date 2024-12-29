@@ -1,6 +1,6 @@
 import { Product } from "../models/product.model.js";
 import { apiResponse } from "../utils/apiResponse.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import { uploadToCloudinary } from "../utils/cloudinary.js";
 
 const createProduct = async (req, res) => {
    try {
@@ -26,7 +26,7 @@ const createProduct = async (req, res) => {
        console.log("File Path for Upload:", productImageLocalPath);
 
        // Upload the file to Cloudinary
-       const ProductImageUrl = await uploadOnCloudinary(productImageLocalPath);
+       const ProductImageUrl = await uploadToCloudinary(productImageLocalPath);
        console.log("Cloudinary URL:", ProductImageUrl);
 
        // Create the product in the database
