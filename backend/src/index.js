@@ -6,7 +6,7 @@ dotenv.config({
     path: './.env'
 })
 connectDB().then(() => {
-    app.listen(8000, ()=>{
+    app.listen(8080, ()=>{
         console.log("App is running on post 8080 ")
     })
 })

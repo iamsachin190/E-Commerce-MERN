@@ -1,8 +1,8 @@
 class apiResponse {
-    constructor(statusCode, data, massage = "Suceess"){
+    constructor(statusCode, data, message = "Success"){
         this.statusCode = statusCode;
         this.data = data;
-        this.message = massage;
+        this.message = message;
         this.suceess = statusCode < 400; 
     }
 }
