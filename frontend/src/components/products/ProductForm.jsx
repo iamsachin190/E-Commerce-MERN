@@ -27,8 +27,15 @@ export default function ProductForm() {
     data.append('category', formData.category);
     data.append('image', formData.image);
 
+    const token = localStorage.getItem('accessToken'); // Retrieve the token
+    console.log(token);
+
     try {
-      const response = await axios.post('http://localhost:8080/api/product/create', data);
+      const response = await axios.post('http://localhost:8080/api/product/create', data, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include the token in the headers
+        },
+      });
       console.log("Product created successfully", response.data);
       alert("Product created successfully");
     } catch (err) {
